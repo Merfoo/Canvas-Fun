@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fun Canvas!</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style>
+            #canvas 
+            {
+                z-index: 1; 
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                border:3px solid gray;
+            }
+        </style>
+        <script>
+            var m_bClickMode = true;
+            var m_iMap = { width: 0, height: 0 };
+            var m_iTile = { width: 0, height: 0};
+            var m_iTotalTile = { width: 60, height: 30 };
+            var m_bColorFull = new Array();
+            var m_iTime = new Array();
+            var m_iMaxTime = 1000;
+            var m_iSpeed = { game: 50 };
+            var m_Id = { game: null };
+            var m_CanvasMain;
+            
+            document.addEventListener("DOMContentLoaded", initializeGame, false);
+            document.addEventListener("keyup", keyUp, false);
+            document.addEventListener("mousemove", mouseMove, false);
+            document.addEventListener("mousedown", mouseDown, false);
+	    document.documentElement.style.overflowX = 'hidden';	 // Horizontal scrollbar will be hidden
+	    document.documentElement.style.overflowY = 'hidden';         // Vertical scrollbar will be hidden
+            
+            function initializeGame()
+            {
+                initializeCanvas();
+                
+                setInterval("gameLoop();", m_iSpeed.game);
+            }
+            
+            function gameLoop()
+            {
+                for(var x = 0; x < m_bColorFull.length; x++)
+                {
+                    for(var y = 0; y < m_bColorFull[x].length; y++)
+                    {
+                        if(!m_bClickMode)
+                        {
+                            if((m_iTime[x][y] += m_iSpeed.game) >= m_iMaxTime)
+                            {
+                                m_bColorFull[x][y] = false;
+                                m_iTime[x][y] = 0;
+                            }
+                        }
+                        
+                        if(m_bColorFull[x][y])
+                            paintRect(x, y, getRandomColor(1, 255));
+                        
+                        else
+                            paintRect(x, y, "black");
+                    }
+                }
+            }
+            
+            function initializeCanvas()
+            {
+                m_CanvasMain = document.getElementById("canvas").getContext("2d");
+                m_CanvasMain.canvas.width = m_iMap.width = (window.innerWidth - Math.floor(window.innerWidth / 75)); 
+                m_CanvasMain.canvas.height = m_iMap.height = (window.innerHeight - Math.floor(window.innerHeight / 36));
+                m_CanvasMain.clearRect(0, 0, m_iMap.width, m_iMap.height);                
+                m_iTile.width = (m_iMap.width / m_iTotalTile.width);
+                m_iTile.height = (m_iMap.height / m_iTotalTile.height);
+                
+                for(var x = 0; x < m_iTotalTile.width; x++)
+                {
+                    m_bColorFull[x] = new Array();
+                    m_iTime[x] = new Array();
+                    
+                    for(var y = 0; y < m_iTotalTile.height; y++)
+                    {
+                        m_bColorFull[x][y] = false;
+                        m_iTime[x][y] = 0;
+                    }
+                }
+            }
+            
+            function mouseMove(event)
+            {
+                if(!m_bClickMode)
+                {
+                    var x = Math.floor(event.x);
+                    var y = Math.floor(event.y);
+
+                    x = Math.floor((x - 10) / m_iTile.width);
+                    y = Math.floor((y - 10) / m_iTile.height);
+
+                    console.log("X: " + x + ", Y: " + y);
+                    m_bColorFull[x][y] = true;
+                    m_iTime[x][y] = 0;
+                }
+            }
+            
+            function mouseDown(event)
+            {
+                if(m_bClickMode)
+                {
+                    var x = Math.floor(event.x);
+                    var y = Math.floor(event.y);
+
+                    x = Math.floor((x - 10)/ m_iTile.width);
+                    y = Math.floor((y - 10) / m_iTile.height);
+
+                    console.log("X: " + x + ", Y: " + y);
+                    m_bColorFull[x][y] = !m_bColorFull[x][y];
+                    m_iTime[x][y] = 0;
+                }
+            }
+            
+            function keyUp(event)
+            {
+                if(event.keyCode == 32) // Space was pressed
+                    m_bClickMode = !m_bClickMode;
+            }
+            
+            function paintRect(x, y, color)
+            {
+                m_CanvasMain.fillStyle = color;
+                m_CanvasMain.fillRect(x * m_iTile.width, y * m_iTile.height, m_iTile.width, m_iTile.height);
+            }
+            
+            // Returns random color between iMin and iMax.
+            function getRandomColor(iMin, iMax)
+            {
+                // Creating a random number between iMin and iMax, converting to hex
+                var hexR = (getRandomNumber(iMin, iMax)).toString(16);
+                var hexG = (getRandomNumber(iMin, iMax)).toString(16);
+                var hexB = (getRandomNumber(iMin, iMax)).toString(16);
+
+                // Making sure single character values are prepended with a "0"
+                if (hexR.length == 1)
+                    hexR = "0" + hexR;
+
+                if (hexG.length == 1)
+                    hexG = "0" + hexG;
+
+                if (hexB.length == 1)
+                    hexB = "0" + hexB;
+
+                // Creating the hex value by concatenatening the string values
+                return ("#" + hexR + hexG + hexB).toUpperCase();
+            }
+
+            // Returns random number between iMin and iMax, include iMin and iMax
+            function getRandomNumber(iMin, iMax)
+            {
+                if(iMax < iMin)
+                {
+                    var temp = iMax;
+                    iMax = iMin;
+                    iMin = temp;
+                }
+
+                return Math.floor((Math.random() * ((iMax + 1) - iMin)) + iMin);
+            }
+        </script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>
