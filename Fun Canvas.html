@@ -33,14 +33,14 @@
 			document.documentElement.style.overflowY = 'hidden';         // Vertical scrollbar will be hidden
             
             function initializeGame()
-            {
-				alert("This is an ALERT box!!!");
-				alert("This Game Only Works Completely In Google Chrome!!!");
-				alert("GO GOOGLE CHROME");
-				alert("Have Fun!!!");
-				alert("Read the instruction too!!!");
+			{
                 initializeCanvas();
                 
+				var bIsChrome = /chrome/.test(navigator.userAgent.toLowerCase());
+				
+				if(!(/chrome/.test(navigator.userAgent.toLowerCase())))	// Test if the browser is not Google Chrome!!!
+					alert("This game doesn't fully function in browsers that are not Google Chrome ... so use Google Chrome!!!");
+					
                 setInterval("gameLoop();", m_iSpeed.game);
             }
             
