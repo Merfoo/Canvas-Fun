@@ -29,11 +29,16 @@
             document.addEventListener("keyup", keyUp, false);
             document.addEventListener("mousemove", mouseMove, false);
             document.addEventListener("mousedown", mouseDown, false);
-	    document.documentElement.style.overflowX = 'hidden';	 // Horizontal scrollbar will be hidden
-	    document.documentElement.style.overflowY = 'hidden';         // Vertical scrollbar will be hidden
+			document.documentElement.style.overflowX = 'hidden';	 // Horizontal scrollbar will be hidden
+			document.documentElement.style.overflowY = 'hidden';         // Vertical scrollbar will be hidden
             
             function initializeGame()
             {
+				alert("This is an ALERT box!!!");
+				alert("This Game Only Works Completely In Google Chrome!!!");
+				alert("GO GOOGLE CHROME");
+				alert("Have Fun!!!");
+				alert("Read the instruction too!!!");
                 initializeCanvas();
                 
                 setInterval("gameLoop();", m_iSpeed.game);
